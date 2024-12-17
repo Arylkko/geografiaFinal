@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="style.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sniglet&display=swap" rel="stylesheet">
+    <title>Desmatamento na Amazônia</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1 class="white">Trabalho de Geografia</h1>
+    </header>
+
+
+    <main>
+        <h1>Desmatamento na Amazônia</h1>
+        <img class="gif" src="timelapse.gif">
+        <p>O tema escolhido para este trabalho foi o <strong>desmatamento na Amazônia</strong>, um dos problemas
+            ambientais mais graves do Brasil. A escolha foi motivada pela relevância do tema, já que o desmatamento
+            impacta não apenas a biodiversidade local, mas também o clima global e a vida de comunidades que dependem da
+            floresta. Para realização deste trabalho, foram utilizados dados do INPE, o Instituto Nacional de Pesquisas
+            Espaciais, através do sistema PRODES, o Projeto de Monitoramento do Desmatamento da Amazônia por Satélite.
+            Para apresentar os dados de forma clara, foram utilizados JavaScript em conjunto com a biblioteca D3.js.
+            E, além disso, imagens do programa Google Earth foram empregadas para ilustrar e destacar as mudanças
+            ambientais ao longo dos anos.
+        </p>
+
+        <h2> Impactos do tema </h2>
+        <p>O desmatamento na Amazônia traz diversas consequências graves, tanto para o meio ambiente quanto para a
+            sociedade. A destruição das florestas possui imensas consequências, mas entre elas é possível citar a
+            contribuição para o aquecimento global, pois grandes áreas de árvores derrubadas deixam de absorver o
+            dióxido de carbono, liberando ainda mais gases de efeito estufa na atmosfera. Também é importante
+            citar que a perda da vegetação afeta o ciclo das chuvas, prejudicando a agricultura e ameaçando espécies de
+            plantas e animais. Não apenas isso, comunidades indígenas e tradicionais também sofrem com a destruição de
+            suas
+            terras.
+        </p>
+
+        <h2>Período Analisado</h2>
+        <p>Para esta análise, foi considerado o período entre os anos 2010 e 2024. Essa escolha se deu pela
+            disponibilidade e relevância de dados recentes e pela possibilidade de observar tendências de desmatamento
+            ao longo dos
+            últimos anos, permitindo identificar tanto picos quanto reduções nesse período. Podemos observar que entre
+            2019 e 2021, o desmatamento atingiu seus maiores valores, superando os 13.000 km² em 2021.</p>
+
+        <div class="chart">
+            <svg width="600" height="400"></svg>
+        </div>
+
+        <p>Abaixo, há, também, uma comparação de imagens de satélite do período de 1984 a 2024, capturadas em
+            Rondônia, um estado localizado na região Norte do Brasil. As imagens revelam, de forma clara e certamente
+            impactante, a
+            perda progressiva da cobertura da Floresta Amazônica ao longo dos anos. Observa-se que as áreas desmatadas
+            não foram substituídas por cidades, plantações agrícolas ou atividades pecuárias significativas,
+            permanecendo como vastas regiões vazias e inutilizadas, causadas pela ação humana.</p>
+
+        <figure>
+            <img src="1984.png">
+            <figcaption>1984</figcaption>
+        </figure>
+
+        <figure>
+            <img src="2024.png">
+            <figcaption>2024</figcaption>
+        </figure>
+
+
+        <h2>Conclusão do trabalho</h2>
+        <p> Os dados do gráfico e as imagens apresentados mostram claramente como o desmatamento tem avançado,
+            especialmente em
+            áreas próximas a regiões de interesse econômico. A forma como esses dados foram facilmente adquiridos
+            reforça a importância da
+            tecnologia como uma aliada no monitoramento ambiental, o que ajudaria a processar essa situação de maneira
+            responsável e compreensível.</p>
+
+
+
+    </main>
+    <footer>
+    </footer>
+
+    <script>
+        const data = [7000, 6418, 4571, 5891, 5012, 6207, 7893, 6947, 7536, 10129, 10851, 13038, 11594, 9064, 6288];
+        const years = [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
+
+        const svg = d3.select("svg");
+        const width = +svg.attr("width") - 40;
+        const height = +svg.attr("height") - 40;
+        const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+
+        const xScale = d3.scaleBand()
+            .domain(years)
+            .range([margin.left, width])
+            .padding(0.1);
+
+        const yScale = d3.scaleLinear()
+            .domain([0, d3.max(data)])
+            .range([height, margin.top]);
+
+        svg.append("g")
+            .attr("transform", `translate(0,${height})`)
+            .call(d3.axisBottom(xScale).tickFormat(d => d.toString()));
+
+        svg.append("g")
+            .attr("transform", `translate(${margin.left},0)`)
+            .call(d3.axisLeft(yScale));
+
+        svg.selectAll("rect")
+            .data(data)
+            .enter()
+            .append("rect")
+            .attr("x", (d, i) => xScale(years[i]))
+            .attr("y", d => yScale(d))
+            .attr("width", xScale.bandwidth())
+            .attr("height", d => height - yScale(d))
+            .attr("fill", "#e95388");
+
+        svg.append("text")
+            .attr("x", width / 2 + margin.left)
+            .attr("y", height + margin.bottom)
+            .attr("text-anchor", "middle")
+            .text("Anos");
+
+        svg.append("text")
+            .attr("x", -(height / 2))
+            .attr("y", margin.left - 40)
+            .attr("text-anchor", "middle")
+            .attr("transform", "rotate(-90)")
+            .text("Desmatamento (km²)");
+    </script>
+</body>
+
+</html>
